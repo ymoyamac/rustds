@@ -2,8 +2,8 @@ use crate::ok_stack::node::{Link, Node};
 
 #[derive(Debug)]
 pub struct Stack<T> {
-    head: Link<T>,
-    len: usize
+    pub head: Link<T>,
+    pub len: usize
 }
 
 impl <T: std::fmt::Debug> Stack<T> {
