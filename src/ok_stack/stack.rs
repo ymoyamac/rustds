@@ -30,7 +30,7 @@ impl <T: std::fmt::Debug> Stack<T> {
         let new_node = Box::new(Node {
             data,
             // The 'take' method is an abstraction of std::mem::replace
-            // it is a swap
+            // Moves the value out of `self.head` and leaves `None` in its place
             next: std::mem::replace(&mut self.head, None),
         });
         dbg!(&new_node);
@@ -40,6 +40,7 @@ impl <T: std::fmt::Debug> Stack<T> {
 
     pub fn pop(&mut self) -> Option<T> {
         self.head.take().map(|node| {
+            dbg!(&node);
             self.head = node.next;
             self.len -= 1;
             node.data
@@ -93,6 +94,7 @@ mod tests {
     #[test]
     fn peek() {
         let mut stack = Stack::<i32>::new();
+        assert_eq!(stack.peek(), None);
         stack.push(1);
         stack.push(2);
         stack.push(3);
@@ -114,5 +116,6 @@ mod tests {
         });
 
         assert_eq!(stack.peek(), Some(&48));
+        assert_eq!(stack.len(), 3);
     }
 }
