@@ -1,5 +1,6 @@
 use crate::ok_stack::node::{Link, Node};
 
+#[derive(Debug)]
 pub struct Stack<T> {
     head: Link<T>,
     len: usize

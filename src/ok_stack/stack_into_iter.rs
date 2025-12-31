@@ -33,4 +33,18 @@ mod tests {
         assert_eq!(iter.next(), Some(2));
         assert_eq!(iter.next(), Some(1));
     }
+
+    #[test]
+    fn into_iter_map() {
+        let mut stack = Stack::<i32>::new();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+
+        let result = stack.into_iter()
+            .map(|n| n * 2)
+            .collect::<Vec<i32>>();
+
+        assert_eq!(result[0], 6);
+    }
 }
