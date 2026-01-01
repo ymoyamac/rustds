@@ -5,13 +5,15 @@ fn main() {
     let mut stack = Stack::new();
     stack.push(1);
     stack.push(2);
+    stack.push(3);
     println!("{stack:?}");
 
+    let list = stack.iter_mut()
+        .map(|node| {
+            *node = *node * 2;
+            node
+        })
+        .collect::<Vec<&mut i32>>();
 
-    let st = stack.into_iter()
-        .map(|n| n * 2)
-        .collect::<Vec<i32>>();
-
-    println!("{st:?}");
-
+    println!("{list:?}");
 }
