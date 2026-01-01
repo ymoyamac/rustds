@@ -63,6 +63,16 @@ impl <T: std::fmt::Debug> Stack<T> {
     }
 }
 
+impl<T> Drop for Stack<T> {
+    fn drop(&mut self) {
+        let mut cur_link = self.head.take();
+        while let Some(mut boxed_node) = cur_link {
+            cur_link = boxed_node.next.take();
+        }
+    }
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
