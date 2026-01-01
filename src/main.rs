@@ -16,4 +16,9 @@ fn main() {
         .collect::<Vec<&mut i32>>();
 
     println!("{list:?}");
+
+    let stack = Stack::from(&vec![1, 2, 3]);
+
+    println!("{stack:?}");
+
 }

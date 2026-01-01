@@ -6,7 +6,7 @@ pub struct Stack<T> {
     pub len: usize
 }
 
-impl <T: std::fmt::Debug> Stack<T> {
+impl <T: std::fmt::Debug + Clone> Stack<T> {
     pub fn new() -> Self {
         Self { head: None, len: 0 }
     }
@@ -60,6 +60,14 @@ impl <T: std::fmt::Debug> Stack<T> {
             dbg!(&node);
             node.data_mut()
         })
+    }
+
+    pub fn from(values: &[T]) -> Self {
+        let mut stack = Stack::<T>::new();
+        for v in values {
+            stack.push(v.clone());
+        }
+        stack
     }
 }
 
