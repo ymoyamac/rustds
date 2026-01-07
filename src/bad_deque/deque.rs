@@ -3,8 +3,8 @@ use std::{cell::{Ref, RefMut}, rc::Rc};
 use crate::bad_deque::node::{Link, Node};
 
 pub struct Deque<T> {
-    head: Link<T>,
-    tail: Link<T>
+    pub head: Link<T>,
+    pub tail: Link<T>
 }
 
 impl<T> Deque<T> {

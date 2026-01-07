@@ -3,6 +3,7 @@ use std::cell::RefCell;
 
 pub type Link<T> = Option<Rc<RefCell<Node<T>>>>;
 
+#[derive(Debug)]
 pub struct Node<T> {
     pub data: T,
     pub prev: Link<T>,
