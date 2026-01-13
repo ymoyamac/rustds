@@ -1,4 +1,4 @@
-use rustds::ok_stack::stack::Stack;
+use rustds::ok_stack::{FromSlice, stack::Stack};
 
 
 fn main() {
@@ -16,4 +16,10 @@ fn main() {
         .collect::<Vec<&mut i32>>();
 
     println!("{list:?}");
+
+    let slice = vec![1, 2, 3, 4, 5, 6, 7];
+    let stack = Stack::from_slice(&slice[2..5]);
+
+    println!("{stack:?}");
+
 }

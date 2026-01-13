@@ -1,4 +1,4 @@
-use crate::ok_stack::node::{Link, Node};
+use crate::ok_stack::{FromSlice, node::{Link, Node}};
 
 #[derive(Debug)]
 pub struct Stack<T> {
@@ -6,7 +6,7 @@ pub struct Stack<T> {
     pub len: usize
 }
 
-impl <T: std::fmt::Debug> Stack<T> {
+impl <T: std::fmt::Debug + Clone> Stack<T> {
     pub fn new() -> Self {
         Self { head: None, len: 0 }
     }
@@ -61,6 +61,7 @@ impl <T: std::fmt::Debug> Stack<T> {
             node.data_mut()
         })
     }
+
 }
 
 impl<T> Drop for Stack<T> {
@@ -72,6 +73,25 @@ impl<T> Drop for Stack<T> {
     }
 }
 
+impl<T: std::fmt::Debug + Clone> From<Vec<T>> for Stack<T>  {
+    fn from(value: Vec<T>) -> Self {
+        let mut stack = Stack::<T>::new();
+        for v in value {
+            stack.push(v);
+        }
+        stack
+    }
+}
+
+impl<T: std::fmt::Debug + Clone> FromSlice<T> for Stack<T> {
+    fn from_slice(value: &[T]) -> Self {
+        let mut stack = Stack::<T>::new();
+        for v in value {
+            stack.push(v.clone());
+        }
+        stack
+    }
+}
 
 #[cfg(test)]
 mod tests {

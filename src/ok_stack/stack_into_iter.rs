@@ -2,13 +2,13 @@ use crate::ok_stack::stack::Stack;
 
 pub struct IntoIter<T>(Stack<T>);
 
-impl <T: std::fmt::Debug> Stack<T> {
+impl <T: std::fmt::Debug + Clone> Stack<T> {
     pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
 }
 
-impl <T: std::fmt::Debug> Iterator for IntoIter<T> {
+impl <T: std::fmt::Debug + Clone> Iterator for IntoIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
