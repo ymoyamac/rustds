@@ -1,6 +1,6 @@
 pub struct Node<T> {
-    data: T,
-    next: *mut Node<T>
+    pub data: T,
+    pub next: *mut Node<T>
 }
 
 pub struct Queue<T> {
@@ -47,6 +47,18 @@ impl<T> Queue<T> {
             }
         }
     }
+
+    pub fn peek(&self) -> Option<&T> {
+        unsafe {
+            self.head.as_ref().map(|node| &node.data)
+        }
+    }
+
+    pub fn peek_mut(&mut self) -> Option<&mut T> {
+        unsafe {
+            self.head.as_mut().map(|node| &mut node.data)
+        }
+    }
 }
 
 impl<T> Drop for Queue<T> {
@@ -85,5 +97,43 @@ mod test {
         // Check exhaustion
         assert_eq!(queue.pop(), Some(5));
         assert_eq!(queue.pop(), None);
+    }
+
+    #[test]
+    fn miri_food() {
+        let mut queue = Queue::new();
+
+        queue.push(1);
+        queue.push(2);
+        queue.push(3);
+
+        assert!(queue.pop() == Some(1));
+        queue.push(4);
+        assert!(queue.pop() == Some(2));
+        queue.push(5);
+
+        assert!(queue.peek() == Some(&3));
+        queue.push(6);
+        queue.peek_mut().map(|x| *x *= 10);
+        assert!(queue.peek() == Some(&30));
+        assert!(queue.pop() == Some(30));
+
+        for elem in queue.iter_mut() {
+            *elem *= 100;
+        }
+
+        let mut iter = queue.iter();
+        assert_eq!(iter.next(), Some(&400));
+        assert_eq!(iter.next(), Some(&500));
+        assert_eq!(iter.next(), Some(&600));
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+
+        assert!(queue.pop() == Some(400));
+        queue.peek_mut().map(|x| *x *= 10);
+        assert!(queue.peek() == Some(&5000));
+        queue.push(7);
+
+        // Drop it on the ground and let the dtor exercise itself
     }
 }
