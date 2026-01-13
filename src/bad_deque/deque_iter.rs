@@ -29,6 +29,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
         //     }
         //     data
         // })
+        self.0.take();
         todo!()
     }
 }
