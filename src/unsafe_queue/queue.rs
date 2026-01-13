@@ -1,51 +1,57 @@
-pub type Link<T> = Option<Box<Node<T>>>;
-
 pub struct Node<T> {
     data: T,
-    next: Link<T>
+    next: *mut Node<T>
 }
 
 pub struct Queue<T> {
-    pub head: Link<T>,
+    pub head: *mut Node<T>,
     pub tail: *mut Node<T>,
 }
 
 impl<T> Queue<T> {
     pub fn new() -> Self {
-        Self { head: None, tail: std::ptr::null_mut() }
+        Self {
+            head: std::ptr::null_mut(),
+            tail: std::ptr::null_mut()
+        }
     }
 
     pub fn push(&mut self, data: T) {
-        let mut new_node = Box::new(Node {
-            data,
-            next: None
-        });
+        unsafe {
+            let new_tail = Box::into_raw(Box::new(Node {
+                data,
+                next: std::ptr::null_mut()
+            }));
 
-        let raw_tail: *mut _ = &mut *new_node;
-
-        if !self.tail.is_null() {
-            unsafe {
-                (*self.tail).next = Some(new_node);
+            if !self.tail.is_null() {
+                (*self.tail).next = new_tail;
+            } else {
+                self.head = new_tail;
             }
-        } else {
-            self.head = Some(new_node);
+            self.tail = new_tail;
         }
-
-        self.tail = raw_tail;
-
     }
 
     pub fn pop(&mut self) -> Option<T> {
-        self.head.take().map(|head| {
-            let head = *head;
-            self.head = head.next;
+        unsafe {
+            if self.head.is_null() {
+                None
+            } else {
+                let head = Box::from_raw(self.head);
+                self.head = head.next;
 
-            if self.head.is_none() {
-                self.tail = std::ptr::null_mut();
+                if self.head.is_null() {
+                    self.tail = std::ptr::null_mut();
+                }
+                Some(head.data)
             }
+        }
+    }
+}
 
-            head.data
-        })
+impl<T> Drop for Queue<T> {
+    fn drop(&mut self) {
+        while let Some(_) = self.pop() {}
     }
 }
 
